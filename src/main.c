@@ -220,9 +220,10 @@ void handleEvent(
 {
     FSW * fsw = (FSW *) refcon;
     IOHIDEventStruct event;
-    while (result == kIOReturnSuccess)
+    while (true)
     {
         result = (*fsw->queue)->getNextEvent(fsw->queue, &event, zeroTime, 0);
+        if ( result != kIOReturnSuccess ) return;
         IOHIDElementCookie c = event.elementCookie;
         if (c == fsw->cookie_1_down && !fsw->sw1isDown)
         {
@@ -237,17 +238,13 @@ void handleEvent(
         else if (c == fsw->cookie_2_down && !fsw->sw2isDown)
         {
             fsw->sw2isDown = true;
-            raiseKeyboardEvent(kVK_F19, true);
+            raiseKeyboardEvent(kVK_F17, true);
         }
         else if (c == fsw->cookie_2_up && fsw->sw2isDown)
         {
             fsw->sw2isDown = false;
-            raiseKeyboardEvent(kVK_F19, false);
+            raiseKeyboardEvent(kVK_F17, false);
         }
-
-
-        if ( result != kIOReturnSuccess )
-            continue;
     }
 }
 
